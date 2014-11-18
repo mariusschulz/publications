@@ -1,0 +1,57 @@
+\section{Erkennung von Klonen}
+
+\subsection{Klon-Typen} \label{sec:clonetypes}
+
+Bevor wir uns verschiedenen Techniken zur Klonerkennung widmen, müssen wir uns bewusst machen, was es für Arten von Klonen gibt und worin sie sich unterscheiden. In der Literatur \cite{koschke2007survey} werden Klone in Software-Quellcode wie folgt kategorisiert:
+
+\begin{description}
+  \item[Typ 1:]
+  Exakte Kopie bis auf Whitespace, Formatierung und Kommentare.
+  \item[Typ 2:]
+  Syntaktisch identische Kopie, bei der Literalwerte abgeändert oder Bezeichner von Variablen, Typen und Funktionen umbenannt wurden.
+  \item[Typ 3:]
+  Kopie mit eingefügten, veränderten oder gelöschten Statements.
+\end{description}
+
+Als \textit{gapped clones} bezeichnet man Klone vom Typ 3. Das \enquote{gapped} im Namen steht dabei für die Abweichung der Kopien voneinander, also die symbolische \enquote{Lücke}.
+
+
+\subsection{Precision \textit{\&} Recall}
+
+Bei der Betrachtung verschiedener Techniken zur Klonerkennung ist von Interesse, welche Genauigkeit und Trefferquote sie aufweisen. In der englischsprachigen Literatur werden diese Aspekte als \textit{precision} und \textit{recall} bezeichnet. Während \textit{precision} den Anteil relevanter Ergebnisse an allen Suchergebnissen angibt, misst \textit{recall} die Vollständigkeit der gefundenen Resultate. Beim Nachschlagen in der Literatur begegnet man häufig diesen beiden Begriffen, weshalb sie hier der Vollständigkeit halber erwähnt seien.
+
+
+\subsection{Techniken zur Klonerkennung}
+
+\subsubsection{Textbasiert}
+
+Beim Textvergleich werden zwei Klonkandidaten zeilenweise miteinander verglichen. Damit minimale Änderungen an der Darstellung eines Code-Fragments nicht sofort zum Scheitern des String-Vergleichs führen, werden beim Vergleich häufig Kommentare und Whitespace ignoriert.
+
+Da String-Vergleiche generell vergleichweise teuer sind, kann zur Steigerung der Performance eine Hash-Funktion eingesetzt werden. Diese berechnet für jede Zeile einen Hash und unterteilt somit die Menge aller Zeilen in verschiedene Partitionen mit dem gleichen Hash-Wert. Der anschließende String-Vergleich wird lediglich auf Zeilen innerhalb der gleichen Partition angewendet \cite{koschke2007survey}.
+
+\subsubsection{Token-basiert}
+
+Beim Token-basierten Ansatz sind nicht mehr die einzelnen Zeichen zweier Code-Fragmente die kleinste Einheit, die zum Vergleich herangezogen wird, sondern deren Tokens \cite{baker1995finding}. Genau wie beim textbasierten Ansatz findet hierbei i.d.R. eine Normalisierung statt, sodass nicht die konkreten Werte eines Tokens betrachtet werden, sondern nur dessen Identität. Damit wird die Token-basierte Erkennung robust gegen Modifizierungen von Whitespace oder Kommentaren, Umbenennung von Identifiern und Änderung von Literalwerten.
+
+Zum effizienten Finden gleicher Token-Sequenzen eignet sich als Datenstruktur ein \textit{suffix tree}, der sich in linearer Laufzeit konstruieren lässt \cite{koschke2013Similarity}. Klonkandidaten mit bestimmter Mindestlänge lassen sich von der Wurzel ausgehend leicht ablesen, da die Pfade zu den Blättern mit den gemeinsamen Präfixen beschriftet sind; diese Präfixe repräsentieren den geklonten Teil der Code-Fragmente und machen so den Klonkandidaten aus.
+
+
+\subsubsection{Syntaxbaum-basiert}
+
+Wie der Name vermuten lässt, wird beim Syntaxbaum-basierten Ansatz der abstrakte Syntaxbaum (engl. \textsc{Ast} für \textit{abstract syntax tree}) eines Programms erstellt. Die Robustheit der Token-basierten Erkennung gegen (strukturerhaltende) Änderungen ist auch hier gegeben. Der eigentliche Vergleich findet hier auf Teilbäumen des Syntaxbaums statt, die im Sinne der Performancesteigerung gehasht werden können.
+
+Anders als beim Text- oder Token-basierten Ansatz ist für den Aufbau des Syntaxbaums ein tieferes Programmverständnis erforderlich: Es wird ein Parser benötigt, der die Grammatik der verwendeten Programmiersprache versteht. Damit der Parser einen Syntaxbaum erstellen kann, muss der Code in kompilierten Sprachen syntaktisch und semantisch korrekt sein; fehlerhafter Code, der nicht kompiliert, kann also nicht mithilfe eines Syntaxbaums auf Klone untersucht werden.
+
+
+\subsubsection{Abhängigkeitsgraph-basiert}
+
+Das letzte Verfahren, das in diesem Paper betrachtet werden soll, baut auf dem sogenannten Abhängigkeitsgraph  (\textit{program dependence graph}, oder kurz \textsc{Pdg}) eines Programms auf. Es macht sich zunutze, dass Zeilen bzw. Statements eines Code-Fragmentes i.d.R. nicht beliebig vertauscht werden können, wenn sie gleichzeitig semantisch korrekt und sinnerhaltend bleiben sollen.
+
+Imperative Programme bestehen aus einer Reihe von Statements, von denen manche Abhängigkeiten untereinander aufweisen. So kann in C-ähnlichen Sprachen eine Variable erst nach ihrer Deklaration verwendet werden, aber nicht vorher. Auch bestehen logische Abhängigkeiten zwischen Statements: Wird ein numerischer Parameter einer Methode erst mit einem Faktor multipliziert und anschließend zu einer Konstanten dazuaddiert, liefern die Operationen in umgekehrter Ausführungsreihenfolge i.a. nicht das gleiche Ergebnis. Die zwei entsprechenden Statements können demnach nicht vertauscht werden, ohne die Programmlogik zu ändern.
+
+Ein \textit{program dependence graph} ermittelt nun die Abhängigkeiten zwischen den Statements eines Code-Fragmentes und repräsentiert diese als Graph. Der Vergleich zweier Code-Einheiten wird dann als Suche nach isomorphen Teilgraphen durchgeführt. Dieses Problem ist jedoch NP-schwer, weshalb in der Praxis approximative Verfahren eingesetzt werden \cite{koschke2007survey}.
+
+
+\subsubsection{Weitere Techniken}
+
+Die Liste der genannten Techniken zur Klonerkennung ist natürlich nicht vollständig; so wurden z.B. Metriken-basierte Ansätze nicht besprochen. Es existiert eine Vielzahl an Algorithmen und Verfahren für dieses Gebiet, aber auch für verwandte Gebiete wie die Plagiatserkennung. Diese würden jedoch den Rahmen dieser kurzen Arbeit sprengen und sind daher in der Literatur nachzulesen.

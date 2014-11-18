@@ -1,0 +1,15 @@
+\section{Analysierte Projekte}
+
+Mithilfe von Con\textsc{Qat} \cite{deissenboeck2008tool}, dem \textit{Continuous Quality Assessment Toolkit}, wurden für diese Arbeit die folgenden fünf quelloffenen Java-Projekte auf inkonsistente Klone untersucht:
+
+\begin{itemize}
+  \item Art of Illusion (AoI)
+  \item Argo\textsc{Uml}
+  \item FreeCol
+  \item FreeMind
+  \item JUnit
+\end{itemize}
+
+Für die Analyse wurde der Con\textsc{Qat}-Block \inlinecode{JavaGappedCloneAnalysis} gewählt. Zu Beginn wurden für die Parameter \textit{gap ratio}, \textit{clone minlength} und \textit{max errors} die Werte 0.25, 10 und 5 verwendet. Bei der Suche nach Klonen hat sich schnell herausgestellt, dass die Qualität der gefundenen Resultate maßgeblich von den gewählten Parametern abhängt. Während eine vorgeschriebene Mindestlänge von 10 bei AoI gut funktioniert und längere Klone freigelegt hat, ist dieser Wert deutlich zu hoch für JUnit gewesen: Die meisten Methoden in JUnit sind kurz gehalten und weisen daher nur deutlich kürzere Klone auf. Für ein Projekt, das sich der Qualitätssicherung durch Tests verschrieben hat, ist diese Erkenntnis nicht weiter verwunderlich.
+
+Der mit weit über 100 Zeilen längste gefundene Klon war in AoI enthalten. Bei einer experimentellen Erhöhung des Wertes \textit{max errors} auf 25 fand ihn Con\textsc{Qat} mit 24 Gaps. Im Anhang sind dessen Beginn sowie weitere beispielhafte Klone aus den analysierten Projekten zu finden.

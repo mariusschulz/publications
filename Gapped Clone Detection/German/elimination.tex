@@ -1,0 +1,20 @@
+\section{Beseitigung von Klonen}
+
+Eine Strategie zur Entfernung neuer Klone kann es sein, diese gar nicht erst entstehen zu lassen. Balazinska et al. \cite{balazinska2000advanced} führen dafür Entwurfsmuster als Ansatz an, der die Anzahl an Klonen durch eine bessere Architektur verringert. Dies ist jedoch nur schwer automatisiert machbar und muss daher i.d.R. manuell erledigt werden \cite{koschke2007survey}.
+
+
+\subsection{Auslagerung von geteiltem Code}
+
+Sind die Klone bereits vorhanden, so können diese häufig durch Refactoring-Verfahren wie \textit{Extract Method} oder \textit{Extract Class} beseitigt werden, sofern die verschiedenen Ausprägungen nicht zu sehr voneinander abweichen \cite{fanta1999removing}. Zum Behandeln von Typ-3-Klonen nennt Koschke beispielhaft Makros und Präprozessor-Anweisungen als Lösungsansatz \cite{koschke2007survey}.
+
+Aus meiner eigenen Erfahrung möchte ich an dieser Stelle darauf hinweisen, dass Direktiven für einen Präprozessor -- insbesondere Verfahren wie die bedingte Kompilierung -- mit Vorsicht zu genießen sind. Auf der einen Seite sind sie schwer zu testen, da der Code in allen möglichen Varianten kompiliert werden muss. Auf der anderen Seite steigern sie die Komplexität eines Moduls, sodass dessen Verständlichkeit leidet.
+
+
+\subsection{Automatische Code-Generierung}
+
+Abschließend ist es möglich, sich codegenerierende Verfahren zunutze zu machen und den redundanten Code automatisiert erzeugen zu lassen. Da die Generierung nicht manuell stattfindet, ist sie nicht anfällig für Flüchtigkeits- oder Tippfehler. Java setzt diese Methode beispielsweise ein, um den Quellcode für verschiedene Buffer-Klassen wie \inlinecode{ByteBuffer} und \inlinecode{CharBuffer} automatisiert zu erstellen \cite{koschke2013Similarity}. Dafür kommt \textsc{Xvcl} zum Einsatz, die \textit{XML-Based Variant Configuration Language} \cite{XVCL}. Diese manipuliert konfigurierbare Programmkomponenten gemäß einer \textsc{Xml}-Beschreibung und macht so die manuelle Anpassung unnötig.
+
+
+\subsection{Kosten-Nutzen-Verhältnis}
+
+Damit die Ressourcen, die für die Entfernung von Klonen aufgewendet werden, gerechtfertigt werden können, müssen Kosten und Nutzen der Entfernung in einem günstigen Verhältnis stehen. Es muss vorab situationsabhängig entschieden werden, ob im betroffenen Modul zum gegebenen Zeitpunkt eine Entfernung überhaupt gewünscht ist. Wenn bereits geplant ist, dass sich in naher Zukunft beide Kopien unabhängig voneinander in verschiedene Richtungen weiterentwickeln, macht eine Zusammenführung wenig Sinn. Im Falle solch einer Weiche spricht man daher treffend von \textit{forking} \cite{koschke2007survey}.

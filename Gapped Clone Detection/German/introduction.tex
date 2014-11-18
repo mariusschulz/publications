@@ -1,0 +1,60 @@
+\section{Einführung}
+
+\subsection{Begriffsklärung}
+
+\subsubsection{Clones}
+
+Dem Klonbegriff dieses Papers liegt die Definition von Bettenburg et al. zugrunde, wie er in \cite{bettenburg2012empirical} verwendet wird:
+
+\begin{italicquotes}
+A code clone is a part of the source code that is identical, or at least highly similar, to another part (clone) in terms of structure and semantics.
+\end{italicquotes}
+
+Da die Frage nach semantischer Äquivalenz i.a. nicht entscheidbar ist, interessieren uns an dieser Stele lediglich diejenigen Klone, die sich in ihrer Programmdarstellung ähneln (engl. \textit{representational clones}).
+
+
+\subsubsection{Gapped Clones}
+
+Als \textit{gapped clones} bezeichnet man dabei diejenigen Klone, die sich bis auf geringe Abweichungen ähnlich sind; der Begriff \enquote{Klon} darf daher an dieser Stelle nicht als absolut identische Kopie verstanden werden. Im Abschnitt~\ref{sec:clonetypes} wird im Detail auf mögliche Unterschiede zwischen Code-Fragmenten eingegangen, die hier unter dem recht unspezifischen Begriff \enquote{geringe Abweichung} zusammengefasst sind.
+
+
+\subsection{Warum kopieren wir Code?}
+
+Es gibt diverse Gründe, die einen Entwickler dazu bewegen, existierenden Code zu kopieren und somit Copy\,\textit{\&}\,Paste-Programmierung zu betreiben.
+
+
+\subsubsection{Limitierungen der Programmiersprache}
+
+Bietet die vorliegende Programmiersprache keine Unterstützung für bestimmte Sprachkonstrukte, mit denen sich Code an anderer Stelle wiederverwenden lässt, ist das Kopieren von Code teilweise die einzige Option des Entwicklers.
+
+Ein konkretes Beispiel für eine Sprache, der solch ein Feature fehlte, ist Java. Vor der im September 2004 veröffentlichten Version 5.0 gab es in Java keine Generics. Sollte damals eine bestimmte Funktionalität auf mehreren Datentypen definiert werden, wie z.B. eine Berechnung auf den numerischen Typen \inlinecode{int} und \inlinecode{long}, so musste sie für jeden Datentyp einzeln implementiert werden.
+
+
+\subsubsection{Cross-Cutting Concerns}
+
+Als Cross-Cutting Concerns bezeichnet man Belange einer Software, die sich, gemäß ihrem Namen, horizontal durch die Anwendung ziehen. Darunter fallen z.B. die folgenden Aspekte:
+
+\begin{itemize}
+  \item Logging,
+  \item Caching,
+  \item Validierung,
+  \item Autorisierung,
+  \item Lokalisierung,
+  \item Memory Management, uvm.
+\end{itemize}
+
+Weil sich diese Funktionalität teilweise nur schwer an einer Stelle zusammenfassen lässt, wird häufig Copy\,\textit{\&}\,Paste eingesetzt, um diese Aspekte an unterschiedlichen Stellen zu implementieren, was verstärkt zu Codeduplizierung führt. Lösungsansätze dafür bietet die Aspektorientierte Programmierung \cite{Filman2005}.
+
+
+\subsubsection{Anfangs unklare Abstraktionen}
+
+Bei der Entwicklung eines Softwaremoduls sind häufig nicht alle sinnvollen Abstraktionen von Anfang an offensichtlich. Das Entwicklerteam kann daher die Phase der Abstraktion nach hinten schieben, bis sich Muster in der Verwendung der Komponente abzeichnen. So lässt sich vorzeitiges \textit{Overengineering} vermeiden, das die Komplexität der Software unnötig erhöht hätte. Der Preis dafür ist die (temporäre) Redundanz, die der duplizierte Code mit sich bringt,  mit all ihren Nachteilen, die im folgenden behandelt werden.
+
+
+\subsubsection{Weitere Gründe}
+
+Die bisher genannten Gründe waren allesamt technischer Natur, jedoch gibt es darüber hinaus eine Reihe an weiteren Faktoren, die zur Duplizierung von Code beitragen.
+
+Steht das Entwicklungsteam eines Softwareprojektes unter akutem Zeitdruck, kann es als Zwischenlösung lukrativ erscheinen, Code zu duplizieren, anstatt auf saubere Wiederverwendungsmechanismen zu setzen. Findet später kein Refactoring statt, häuft sich \textit{technical debt} in Form von Code-Klonen an. Aus eigener Projekterfahrung kann ich bestätigen, dass solche Provisorien zu ausgeprägter Langlebigkeit tendieren.
+
+Koschke \cite{koschke2007survey} führt an, dass fragwürdige Produktivitätsmetriken von Entwicklern, wie z.B. die Anzahl geschriebener Code-Zeilen, explizit zum Duplizieren von Code verleiten. Schlussendlich ist es ebenfalls denkbar, dass Code Clones aufgrund von Faulheit, Gleichgültigkeit oder mangelndem Bewusstsein der Entwickler stattfindet.

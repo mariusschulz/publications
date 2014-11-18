@@ -1,0 +1,40 @@
+\section{Motivation \textit{\&} Relevanz}
+
+\subsection{Entstehung von Inkonsistenzen}
+
+Dupliziert ein Entwickler ein Stück Code, so ist das kopierte Fragment nun an einer weiteren Stelle redundant vorhanden. Damit unterscheidet es sich aber noch nicht vom Ausgangscode, ist also noch eine konsistente Kopie. Eine Reihe an Ursachen kann jedoch für die Entstehung von Inkonsistenzen sorgen, wie z.B. Code-Vorlagen, Vorsicht des Entwicklers und Versehen.
+
+
+\subsubsection{Inkonsistenz durch Vorlagen}
+
+Die Wiederverwendung von existierendem Code per Copy\,\textit{\&}\,Paste ist laut Kim et al. \cite{kim2004ethnographic} die häufigste Ursache fürs Klonen. Dies trifft insbesondere auf Schnittstellen von Funktionsbibliotheken zu, bei deren Verwendung sehr ähnliche Aufrufsmuster entstehen. Nimmt dieser Boilerplate-Code größere Ausmaße an, deutet dies vermutlich auf ein mangelhaftes Design der Schnittstelle hin \cite{koschke2013Similarity}.
+
+Häufig wird jedoch der kopierte Code nicht 1:1 übernommen, sondern abgeändert und an die neuen Bedürfnisse angepasst; es entsteht ein inkonsistenter Klon. Das kopierte Code-Fragment dient demnach als Vorlage, weshalb man von \textit{templating} spricht.
+
+
+\subsubsection{Inkonsistenz aus Vorsicht}
+
+Auch die Vorsicht eines Entwicklers kann Ursache für inkonsistente Klone sein. Muss ein Entwickler beispielsweise eine Änderung an einem ihm fremden Legacy-System vornehmen, sind ihm oftmals die Auswirkungen seiner Änderung unbekannt. Häufig besitzen diese Systeme keine Tests, was die Unsicherheit noch befördert. In solchen Fällen kann sich der Entwickler dazu entscheiden, seine Anpassungen in einer Kopie vorzunehmen, damit der existierende Code unangetastet bleibt und Breaking Changes vermieden werden.
+
+
+\subsubsection{Inkonsistenz aus Versehen}
+
+Sowohl bei der Wiederverwendung durch Vorlagen als auch bei der Code-Duplizierung und -Anpassung aus Vorsicht hat der Entwickler inkonsistente Klone bewusst in Kauf genommen. Jedoch kann es leicht passieren, ungewollte Inkonsistenzen herbeizuführen, indem bei einer Änderung an einem Klon nicht alle Instanzen seiner sogenannten \textit{Klongruppe} angepasst werden. Der Entwickler hat so mangels Kenntnis der anderen Ausprägungen dieses Klons unbewusst inkonsistenten Code erzeugt.
+
+
+\subsection{Wartungsaufwand und Fehlverhalten}
+
+Klone im Allgemeinen führen zu erhöhtem Wartungsaufwand \cite{koschke2007survey}, da jede Ausprägung eines Klons gefunden und abgeändert werden muss, um Inkonsistenzen zu vermeiden. Da in der Regel jedoch nicht dokumentiert ist, wo Code geklont worden ist \cite{koschke2013Similarity}, müssen Klone zur Wartungszeit gefunden werden. Schon bei mittelmäßig großen Projekten ist das manuell nicht mehr sinnvoll machbar, sodass automatisierte Unterstützung durch Tooling benötigt wird  \cite{koschke2013Similarity}.
+
+Wird die Anpassung bei einem oder mehreren Klonen der Klongruppe vergessen oder übersehen, kann die enstandene Inkonsistenz leicht zu unerwartetem Verhalten des Programms führen: Ein Teil der Logik des Systems ist nun an verschiedenen Stellen unterschiedlich implementiert -- eine Steilvorlage für Bugs und damit zentraler Bestandteil des Problems.
+
+
+\subsubsection{Empirische Studien}
+
+Dass das bei weitem kein seltener Fall ist, zeigen Juergens et al. eindrucksvoll in \cite{juergens2009code}. In ihrer Studie haben die Autoren fünf Software-Systeme untersucht, die in C\#, Java und \textsc{Cobol} implementiert wurden. Im Abschnitt \enquote{Results} schlüsseln sie auf, wie viele Klongruppen die Systeme enthielten, welche davon inkonsistent waren und welche wiederum davon unbeabsichtigt waren.
+
+Die beeindruckendste Ziffer schließlich ist der Prozentsatz der unbeabsichtigt inkonsistenten Klone (orig. \textit{unintentionally inconsistent clones}), die zu einem Fehlverhalten (einem \textit{Fault}) des Programms führten: Laut Studie beläuft sich dieser dort als $|F| \over |UIC|$ bezeichnete Wert auf 50\%. Intuitiv formuliert heißt das, dass duplizierter Code, der unabsichtlich von seinen anderen Ausprägungen abweicht, in jedem zweiten Fall Ursache für ungewolltes Fehlverhalten ist. Nach ihren Untersuchungen schlussfolgern die Autoren, dass der Anteil an Fehlern in inkonsisten Klonen höher ist als im Schnitt und bekräftigen somit die Relevanz der Klonfindung.
+
+Andere Autoren auf dem Gebiet bestätigen dieses Ergebnis. Monden et al. \cite{monden2002software} berichten von einer höheren Fehlerdichte in Software-Modulen mit großen Klonen. Chou et al. \cite{chou2001empirical} stellten fest, dass Code mit einem Fehler überdurchschnittlich häufig weitere Fehler aufweist, wenn er Klone enthält.
+
+Zusammenfassend lässt sich festhalten, dass Klone -- allen voran unbeabsichtigt inkonsistente Klone -- einen negativen Einfluss auf die Qualität einer Software haben. Sie machen die Wartung einer Anwendung teurer und erhöhen die Wahrscheinlichkeit, dass sich dabei Fehler einschleichen. Im Sinne der Qualitätssicherung ist es daher im Interesse der Entwickler, Klone im Quellcode automatisiert zu finden.

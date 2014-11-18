@@ -1,0 +1,43 @@
+\documentclass[hidelinks,11pt]{article}
+\usepackage{cite}\usepackage{hyperref}
+\usepackage{url}
+\usepackage[english,ngerman]{babel}
+\usepackage[german=quotes]{csquotes}
+\usepackage[utf8]{inputenc}
+
+\newenvironment{italicquotes}
+{\begin{quote}\itshape}
+{\end{quote}}
+
+\newcommand{\inlinecode}{\texttt}
+
+\usepackage{tumlogo}
+\usepackage{geometry}
+\usepackage{graphicx}
+
+\def\doctype{Seminararbeit zum Proseminar Software-Qualität}
+\def\title{Gapped Clone Detection}
+\def\author{Marius Daniel Schulz}
+\def\date{16. Juni 2014}
+
+\begin{document}
+
+\include{cover}
+\input{abstract}
+
+\pagebreak
+\tableofcontents
+\pagebreak
+
+\input{introduction}
+\input{motivation}
+\input{detection}
+\input{elimination}
+\input{project_analyses}
+
+\bibliography{bibliography}{}
+\bibliographystyle{plain}
+
+\include{clone_examples}
+
+\end{document}
